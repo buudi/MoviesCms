@@ -1,0 +1,32 @@
+﻿@using Movies.Cms.Services;
+@inject MovieService movieService;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models
+@{
+	Layout = null;
+	// var typedMultiMediaPicker = Model.Media;
+}
+<h1>Movies Showing</h1>
+<ul>
+	@foreach(var movie in movieService.AllMovies)
+	{
+		<li>@movie.Title - @movie.Synopsis</li>
+
+
+	}
+</ul>
+
+
+@foreach(var movie in movieService.AllMovies)
+{
+	<img src="@movie.Poster!.MediaUrl()" style="width:200px" />
+
+}
+
+@* @foreach (var entry in typedMultiMediaPicker)
+{
+	<img src="@entry.MediaUrl()" style="width:200px" />
+}
+ *@
