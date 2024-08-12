@@ -1,12 +1,10 @@
 ﻿using Movies.Cms.Models;
 using System.ComponentModel.DataAnnotations;
-using Umbraco.Cms.Core.Models;
 
 namespace Movies.Cms.Controllers.Models;
 
 public class CreateMovieRequest
-{
-
+{ 
     [Required]
     public string? Name { get; set; }
 
@@ -17,7 +15,8 @@ public class CreateMovieRequest
     public DateTime? ReleaseYear { get; set; }
 
     [Required]
-    public Director? Director { get; set; }
+    public Guid DirectorId { get; set; }
+
 }
 
 

@@ -1,0 +1,14 @@
+﻿@model Movies.Cms.Models.Movie
+
+<div class="card m-3" style="width: 18rem;">
+	<img class="card-img-top" src="@Model.Poster" alt="Movie Poster">
+	<div class="card-body">
+		<h5 class="card-title">@Model.Title</h5>
+		<ul>
+			<li>Director: @Model.Director!.Id</li>
+			<li>ReleaseYear: @Model.ReleaseYear</li>
+		</ul>
+		<p class="card-text">@Model.Synopsis!</p>
+		<a href="#" class="btn btn-primary">Watch Movie!</a>
+	</div>
+</div>
