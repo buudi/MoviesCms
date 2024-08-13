@@ -15,6 +15,6 @@ public class UpdateMovieRequest
 	public DateTime? ReleaseYear { get; set; }
 
 	[Required]
-	public Director? Director { get; set; }
+	public Guid Director { get; set; }
 }
                                

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Movies.Cms.Controllers.Models;
 
 public class CreateMovieRequest
-{ 
+{
     [Required]
     public string? Name { get; set; }
 
@@ -15,8 +15,7 @@ public class CreateMovieRequest
     public DateTime? ReleaseYear { get; set; }
 
     [Required]
-    public Guid DirectorId { get; set; }
-
+    public Guid Director { get; set; }
 }
 
 

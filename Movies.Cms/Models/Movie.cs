@@ -23,11 +23,14 @@ public class Movie
         ReleaseYear = content.Value<DateTime>("releaseYear");
         //Director = content.Value<Director>("director");
         Poster = content.Value<MediaWithCrops>("poster")!.MediaUrl();
+            
+        IPublishedContent directorContent = content.Value<IPublishedContent>("director")!;
 
-        var directorContent = content.Value<IPublishedContent>("director");
         if(directorContent != null)
         {
             Console.WriteLine("Director at Movie.cs is not null!!");
+
+            Console.WriteLine(directorContent.Key);
             Director = new Director(directorContent);
         }
         else
