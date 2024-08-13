@@ -26,24 +26,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 
 	private void AddPosterToMovie([FromForm]IFormFile? file, Guid movieId)
 	{
-		//string webRootPath = _webHostEnvironment.WebRootPath;
-		//var path = Path.Combine(webRootPath, "images");
-		//Console.WriteLine($"Web root Path: {webRootPath}");
-
-		//foreach (var formFile in files)
-		//{
-		//    if (formFile.Length > 0)
-		//    {
-		//        Console.WriteLine($"to add as poster to movie with id: {movieId}");
-		//        Console.WriteLine($"temp file path: {path}");
-
-		//        using var stream = System.IO.File.Create(path);
-		//        await formFile.CopyToAsync(stream);
-		//    }
-		//}
-
-		//get the media and add it to the media archive
-
+		// to get the media and add it to the media archive later on
 		Guid mediaGuid;
 
 		// Open a new stream to the file
