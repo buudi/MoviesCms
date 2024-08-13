@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Movies.Cms.Models;
 using System;
 using Umbraco;
@@ -14,7 +15,7 @@ using static Umbraco.Cms.Core.Constants.Conventions;
 
 namespace Movies.Cms.Services;
 
-public class MovieService(UmbracoHelper umbracoHelper, IContentService contentService, IMediaService mediaService, MediaFileManager _mediaFileManager, IShortStringHelper _shortStringHelper, IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider, MediaUrlGeneratorCollection _mediaUrlGeneratorCollection, IWebHostEnvironment _webHostEnvironment)
+public class MovieService(UmbracoHelper umbracoHelper, IContentService contentService, IMediaService mediaService, MediaFileManager _mediaFileManager, IShortStringHelper _shortStringHelper, IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider, MediaUrlGeneratorCollection _mediaUrlGeneratorCollection)
 {
 
 
@@ -23,7 +24,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
         public const string MoviesListing = "16e1b89f-5a4e-4165-91bd-5689e387d787";
     }
 
-	private async void AddPosterToMovie(IFormFile? file, Guid movieId)
+	private void AddPosterToMovie([FromForm]IFormFile? file, Guid movieId)
 	{
 		//string webRootPath = _webHostEnvironment.WebRootPath;
 		//var path = Path.Combine(webRootPath, "images");
@@ -47,7 +48,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 
 		// Open a new stream to the file
 		//using (Stream stream = System.IO.File.OpenRead(path))
-		using (Stream stream = file.OpenReadStream())
+		using (Stream stream = file!.OpenReadStream())
 		{
 			// Initialize a new image at the root of the media archive
 			IMedia media = mediaService.CreateMedia("Unicorn", Constants.System.Root, Constants.Conventions.MediaTypes.Image);
@@ -67,10 +68,10 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 		var mediaToAssign = umbracoHelper.Media(mediaGuid);
 
 		// create the udi
-		var udi = Umbraco.Cms.Core.Udi.Create(Constants.UdiEntityType.Media, mediaToAssign.Key);
+		var udi = Umbraco.Cms.Core.Udi.Create(Constants.UdiEntityType.Media, mediaToAssign!.Key);
 
 		// set the value to the media picker
-		content.SetValue("poster", udi.ToString());
+		content!.SetValue("poster", udi.ToString());
 
 		// save and publish
 		contentService.SaveAndPublish(content);
@@ -88,7 +89,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
         return movie;
     }
 
-    public void CreateMovie(string culture, string? name, string? synopsis, DateTime? releaseYear, Guid directorId, IFormFile? posterFile)
+    public void CreateMovie(string culture, string? name, string? synopsis, DateTime? releaseYear, Guid directorId, [FromForm]IFormFile? posterFile)
     {
         var content = contentService.Create(name!, Guid.Parse(ContentKeys.MoviesListing),"movie");
         
@@ -133,12 +134,12 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
     public void DeleteMovie(Guid Id)
     {
         IContent? movieContent = contentService.GetById(Id);
-        contentService.Delete(movieContent);
+        contentService.Delete(movieContent!);
     }
 
 	
 
-	public async void AddPosterToTestMovie(IFormFile? file, Guid movieId)
+	public void AddPosterToTestMovie(IFormFile? file, Guid movieId)
     {
         //string webRootPath = _webHostEnvironment.WebRootPath;
         //var path = Path.Combine(webRootPath, "images");
@@ -162,7 +163,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 
 		// Open a new stream to the file
 		//using (Stream stream = System.IO.File.OpenRead(path))
-		using (Stream stream = file.OpenReadStream())
+		using (Stream stream = file!.OpenReadStream())
 		{
 			// Initialize a new image at the root of the media archive
 			IMedia media = mediaService.CreateMedia("Unicorn", Constants.System.Root, Constants.Conventions.MediaTypes.Image);
@@ -182,10 +183,10 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
         var mediaToAssign = umbracoHelper.Media(mediaGuid);
 
 		// create the udi
-		var udi = Umbraco.Cms.Core.Udi.Create(Constants.UdiEntityType.Media, mediaToAssign.Key);
+		var udi = Umbraco.Cms.Core.Udi.Create(Constants.UdiEntityType.Media, mediaToAssign!.Key);
 
 		// set the value to the media picker
-		content.SetValue("poster", udi.ToString());
+		content!.SetValue("poster", udi.ToString());
 
 		// save and publish
 		contentService.SaveAndPublish(content);
