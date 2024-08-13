@@ -13,6 +13,9 @@ public class Movie
     public Director? Director { get; set; }
 
     //public MediaWithCrops? Poster {  get; set; }
+
+    // here the poster just gets the path to folder in wwwroot/media
+    //  sounds to me like the most right thing to do
 	public string? Poster { get; set; }
 
 	public Movie(IPublishedContent content)

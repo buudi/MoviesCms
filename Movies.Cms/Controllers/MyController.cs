@@ -30,16 +30,10 @@ public class MyController(MovieService movieService):UmbracoApiController
     [HttpPost("movies")]
     public IActionResult CreateMovie(CreateMovieRequest requestModel)
     {
-        if (requestModel.Director != null)
-        {
-            // Guid? DirectorId = requestModel.Director.Id;
+        Console.WriteLine("CreateMovie at controller runs okay");
 
-            Console.WriteLine("CreateMovie at controller runs okay");
-
-	        movieService.CreateMovie("en-US", requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director);
-            return Ok(movieService.AllMovies);
-        }
-        return BadRequest("Director Cannot be empty");
+	    movieService.CreateMovie("en-US", requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director, requestModel.Poster);
+        return Ok(movieService.AllMovies);
     }
         
     [HttpPut("movies")]
@@ -59,7 +53,7 @@ public class MyController(MovieService movieService):UmbracoApiController
     [HttpPost("movies/image")]
 	public IActionResult UploadImage([FromForm]UploadPosterRequest file, Guid movieId)
 	{
-        IFormFile posterFile = file.PosterFile;
+        IFormFile? posterFile = file.PosterFile;
         movieService.AddPosterToTestMovie(posterFile, movieId);
 		return Ok();
 	}

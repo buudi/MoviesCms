@@ -24,6 +24,6 @@
 <div class="container">
 	<div class="row p-3">
 		@foreach(var movie in movieService.AllMovies)
-			@await Html.PartialAsync("_MovieCard", movie);
+			@await Html.PartialAsync("_MovieCard", movie)
 	</div>
 </div>

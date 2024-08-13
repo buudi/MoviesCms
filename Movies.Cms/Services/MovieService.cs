@@ -22,19 +22,73 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
     {
         public const string MoviesListing = "16e1b89f-5a4e-4165-91bd-5689e387d787";
     }
-    public List<Movie> AllMovies => umbracoHelper.Content(ContentKeys.MoviesListing)?
+
+	private async void AddPosterToMovie(IFormFile? file, Guid movieId)
+	{
+		//string webRootPath = _webHostEnvironment.WebRootPath;
+		//var path = Path.Combine(webRootPath, "images");
+		//Console.WriteLine($"Web root Path: {webRootPath}");
+
+		//foreach (var formFile in files)
+		//{
+		//    if (formFile.Length > 0)
+		//    {
+		//        Console.WriteLine($"to add as poster to movie with id: {movieId}");
+		//        Console.WriteLine($"temp file path: {path}");
+
+		//        using var stream = System.IO.File.Create(path);
+		//        await formFile.CopyToAsync(stream);
+		//    }
+		//}
+
+		//get the media and add it to the media archive
+
+		Guid mediaGuid;
+
+		// Open a new stream to the file
+		//using (Stream stream = System.IO.File.OpenRead(path))
+		using (Stream stream = file.OpenReadStream())
+		{
+			// Initialize a new image at the root of the media archive
+			IMedia media = mediaService.CreateMedia("Unicorn", Constants.System.Root, Constants.Conventions.MediaTypes.Image);
+			// Set the property value (Umbraco will handle the underlying magic)
+			media.SetValue(_mediaFileManager, _mediaUrlGeneratorCollection, _shortStringHelper, _contentTypeBaseServiceProvider, Constants.Conventions.Media.File, "unicorn.jpg", stream);
+
+			mediaGuid = media.Key;
+
+			// Save to the media archive
+			var result = mediaService.Save(media);
+		}
+
+		// get the page/content of movie item from movieId
+		IContent? content = contentService.GetById(movieId);
+
+		// now get media to assign to media picker by udi (MediaWithCrops) 
+		var mediaToAssign = umbracoHelper.Media(mediaGuid);
+
+		// create the udi
+		var udi = Umbraco.Cms.Core.Udi.Create(Constants.UdiEntityType.Media, mediaToAssign.Key);
+
+		// set the value to the media picker
+		content.SetValue("poster", udi.ToString());
+
+		// save and publish
+		contentService.SaveAndPublish(content);
+	}
+
+	public List<Movie> AllMovies => umbracoHelper.Content(ContentKeys.MoviesListing)?
         .Children
         .Select(x => new Movie(x))
         .ToList() ?? [];
 
     public Movie getMovieById(Guid id)
     {
-        var movieContent = umbracoHelper.Content(id);
-        Movie movie = new(movieContent);
+        IPublishedContent? movieContent = umbracoHelper.Content(id);
+		Movie movie = new(movieContent!);
         return movie;
     }
 
-    public void CreateMovie(string culture, string? name, string? synopsis, DateTime? releaseYear, Guid directorId)
+    public void CreateMovie(string culture, string? name, string? synopsis, DateTime? releaseYear, Guid directorId, IFormFile? posterFile)
     {
         var content = contentService.Create(name!, Guid.Parse(ContentKeys.MoviesListing),"movie");
         
@@ -50,6 +104,9 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 
         content.SetValue("director", directorUdi.ToString());
         contentService.SaveAndPublish(content);
+
+		Guid newMovieId = content.Key;
+		AddPosterToMovie(posterFile, newMovieId);
     }
 
     public void UpdateMovie(string culture, Guid id, string? name, string? synopsis, DateTime? releaseYear, Guid directorId)
@@ -79,7 +136,9 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
         contentService.Delete(movieContent);
     }
 
-    public async void AddPosterToTestMovie(IFormFile file, Guid movieId)
+	
+
+	public async void AddPosterToTestMovie(IFormFile? file, Guid movieId)
     {
         //string webRootPath = _webHostEnvironment.WebRootPath;
         //var path = Path.Combine(webRootPath, "images");
