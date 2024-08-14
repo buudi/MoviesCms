@@ -30,16 +30,9 @@ public class Movie
         IPublishedContent directorContent = content.Value<IPublishedContent>("director")!;
 
         if(directorContent != null)
-        {
-            Console.WriteLine("Director at Movie.cs is not null!!");
-
-            Console.WriteLine(directorContent.Key);
             Director = new Director(directorContent);
-        }
         else
-        {
-            Console.WriteLine("Director content is null");
             Director = null;
-        }
+        
     }
 }

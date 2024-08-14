@@ -15,7 +15,7 @@ using static Umbraco.Cms.Core.Constants.Conventions;
 
 namespace Movies.Cms.Services;
 
-public class MovieService(UmbracoHelper umbracoHelper, IContentService contentService, IMediaService mediaService, MediaFileManager _mediaFileManager, IShortStringHelper _shortStringHelper, IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider, MediaUrlGeneratorCollection _mediaUrlGeneratorCollection)
+public class MovieService(UmbracoHelper umbracoHelper, IContentService contentService, IMediaService mediaService, MediaFileManager _mediaFileManager, IShortStringHelper _shortStringHelper, IContentTypeBaseServiceProvider _contentTypeBaseServiceProvider, MediaUrlGeneratorCollection _mediaUrlGeneratorCollection, IVariationContextAccessor _variationContextAccessor)
 {
 
 
@@ -60,14 +60,31 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 		contentService.SaveAndPublish(content);
 	}
 
-	public List<Movie> AllMovies => umbracoHelper.Content(ContentKeys.MoviesListing)?
-        .Children
-        .Select(x => new Movie(x))
-        .ToList() ?? [];
+	public List<Movie> AllMovies()
+	{
+		var moviesContent = umbracoHelper.Content(ContentKeys.MoviesListing)?
+			.Children
+			.Select(x => new Movie(x))
+			.ToList() ?? [];
+		return moviesContent;
+	}
 
-    public Movie getMovieById(Guid id)
+	public List<Movie> AllMovies(string culture)
+	{
+		_variationContextAccessor.VariationContext = new VariationContext(culture);
+
+		var moviesContent = umbracoHelper.Content(ContentKeys.MoviesListing)?
+			.Children
+			//.Where(e => e.Cultures.ContainsKey(culture))
+			.Select(x => new Movie(x))
+			.ToList() ?? [];
+		return moviesContent;
+	}
+
+	public Movie getMovieById(Guid id, string culture)
     {
-        IPublishedContent? movieContent = umbracoHelper.Content(id);
+		_variationContextAccessor.VariationContext = new VariationContext(culture);
+		IPublishedContent? movieContent = umbracoHelper.Content(id);
 		Movie movie = new(movieContent!);
         return movie;
     }
@@ -76,7 +93,7 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
     {
         var content = contentService.Create(name!, Guid.Parse(ContentKeys.MoviesListing),"movie");
         
-        // in a culture less setting:
+        // in a culture-less setting:
         //content.Name = name;
 
         content.SetCultureName(name, culture);

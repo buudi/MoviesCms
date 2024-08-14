@@ -4,47 +4,54 @@ using Umbraco.Cms.Web.Common.Controllers;
 using Movies.Cms.Services;
 using Movies.Cms.Controllers.Models;
 using Asp.Versioning;
+using System.Globalization;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace Movies.Cms.Controllers;
 
 [ApiVersion(1)]
 [ApiExplorerSettings(GroupName = "Movies V1")]
-[Route("api/v1/en/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class MovieController(MovieService movieService):UmbracoApiController
 {
-    [HttpGet("movies")]
-    public IActionResult GetMovies()
+    [HttpGet]
+    public IActionResult GetMovies([FromQuery]string? culture)
     {
-        var movies = movieService.AllMovies;
+        Console.WriteLine($"Culture {culture}");
+
+        var movies = (culture != null) ? movieService.AllMovies(culture) : movieService.AllMovies(); 
         return Ok(movies);
     }
 
     [HttpGet("id")]
-    public IActionResult GetId(Guid Id)
+    public IActionResult GetId(Guid Id, [FromQuery]string? culture)
     {
-        var movie = movieService.getMovieById(Id);
+        culture = culture ?? "en-US";
+        var movie = movieService.getMovieById(Id, culture);
+
 
         return Ok(movie);
     }
 
-    [HttpPost("movies")]
-    public IActionResult CreateMovie(CreateMovieRequest requestModel)
+    [HttpPost]
+    public IActionResult CreateMovie(CreateMovieRequest requestModel, [FromQuery]string? culture)
     {
-        Console.WriteLine("CreateMovie at controller runs okay");
-
-	    movieService.CreateMovie("en-US", requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director, requestModel.Poster);
-        return Ok(movieService.AllMovies);
+        culture = culture ?? "en-US";
+	    movieService.CreateMovie(culture, requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director, requestModel.Poster);
+        return Ok(movieService.AllMovies());
     }
         
-    [HttpPut("movies")]
-    public IActionResult UpdateMovie(Guid id, UpdateMovieRequest requestModel)
+    [HttpPut]
+    public IActionResult UpdateMovie(UpdateMovieRequest requestModel)
     {
-        movieService.UpdateMovie("en-US", id, requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director, requestModel.Poster);
-        return Ok(movieService.AllMovies);
+        requestModel.culture ??= "en-US";
+        // can also do this: culture ??= "en-US";
+        movieService.UpdateMovie(requestModel.culture, requestModel.Id, requestModel.Name, requestModel.Synopsis, requestModel.ReleaseYear, requestModel.Director, requestModel.Poster);
+        return Ok(movieService.AllMovies());
     }
 
-    [HttpDelete("movies")]
+    [HttpDelete]
     public IActionResult DeleteMovie(Guid id)
     {
         movieService.DeleteMovie(id);
