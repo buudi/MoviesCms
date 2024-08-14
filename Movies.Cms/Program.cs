@@ -5,6 +5,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services.AddScoped<MovieService>();
+services.AddScoped<DirectorService>();
 
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
