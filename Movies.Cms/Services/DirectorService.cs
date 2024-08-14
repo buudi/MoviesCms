@@ -5,7 +5,7 @@ using Umbraco.Cms.Web.Common;
 
 namespace Movies.Cms.Services;
 
-public class DirectorService(UmbracoHelper umbracoHelper, IContentService contentService, IVariationContextAccessor variationContextAccessor)
+public class DirectorService(UmbracoHelper umbracoHelper, IVariationContextAccessor variationContextAccessor)
 {
 	public static class ContentKeys
 	{

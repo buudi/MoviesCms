@@ -7,9 +7,9 @@ namespace Movies.Cms.Controllers;
 
 [ApiVersion(1)]
 [ApiExplorerSettings(GroupName = "Directors V1")]
-[Route("api/v1/[controller]")]
+[Route("api/v1/directors")]
 [ApiController]
-public class DirectorController(DirectorService directorService) : UmbracoApiController
+public class DirectorsController(DirectorService directorService) : UmbracoApiController
 {
 	[HttpGet]
 	public IActionResult GetDirectors([FromQuery]string? culture)

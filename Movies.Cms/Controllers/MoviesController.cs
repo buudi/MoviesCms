@@ -9,9 +9,9 @@ namespace Movies.Cms.Controllers;
 
 [ApiVersion(1)]
 [ApiExplorerSettings(GroupName = "Movies V1")]
-[Route("api/v1/[controller]")]
+[Route("api/v1/movies")]
 [ApiController]
-public class MovieController(MovieService movieService):UmbracoApiController
+public class MoviesController(MovieService movieService):UmbracoApiController
 {
     [HttpGet]
     public IActionResult GetMovies([FromQuery]string? culture)
