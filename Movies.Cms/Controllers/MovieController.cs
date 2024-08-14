@@ -4,8 +4,6 @@ using Umbraco.Cms.Web.Common.Controllers;
 using Movies.Cms.Services;
 using Movies.Cms.Controllers.Models;
 using Asp.Versioning;
-using System.Globalization;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace Movies.Cms.Controllers;
 
