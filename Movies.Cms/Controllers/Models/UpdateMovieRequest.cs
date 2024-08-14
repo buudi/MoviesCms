@@ -16,5 +16,8 @@ public class UpdateMovieRequest
 
 	[Required]
 	public Guid Director { get; set; }
+	
+	[Required]
+	public IFormFile? Poster { get; set; }
 }
                                

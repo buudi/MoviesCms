@@ -93,9 +93,9 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 		AddPosterToMovie(posterFile, newMovieId);
     }
 
-    public void UpdateMovie(string culture, Guid id, string? name, string? synopsis, DateTime? releaseYear, Guid directorId)
+    public void UpdateMovie(string culture, Guid movieId, string? name, string? synopsis, DateTime? releaseYear, Guid directorId, [FromForm]IFormFile? posterFile)
     {
-        IContent? movieContent = contentService.GetById(id);
+        IContent? movieContent = contentService.GetById(movieId);
         
         movieContent!.SetCultureName(name, culture);
 
@@ -112,9 +112,10 @@ public class MovieService(UmbracoHelper umbracoHelper, IContentService contentSe
 		movieContent.SetValue("director", directorUdi);
         
         contentService.SaveAndPublish(movieContent);
+		AddPosterToMovie(posterFile, movieId);
 	}
 
-    public void DeleteMovie(Guid Id)
+	public void DeleteMovie(Guid Id)
     {
         IContent? movieContent = contentService.GetById(Id);
         contentService.Delete(movieContent!);
